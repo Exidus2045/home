@@ -1,0 +1,25 @@
+<?php
+function verifyLogin($username, $password) {
+    $credentials = file_get_contents('passwords.txt');
+    $lines = explode(PHP_EOL, $credentials);
+    
+    foreach ($lines as $line) {
+        list($storedUsername, $storedPassword) = explode(',', trim($line));
+        if ($username === $storedUsername && password_verify($password, $storedPassword)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    
+    if (verifyLogin($username, $password)) {
+        echo "Login successful!";
+    } else {
+        echo "Invalid username or password.";
+    }
+}
+?>
